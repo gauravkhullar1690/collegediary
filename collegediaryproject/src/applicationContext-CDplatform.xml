@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean id="placeholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>/WEB-INF/appContextDB.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="${clgDiry.db.dataSource.jndiName}"/>
+	</bean>
+
+	<bean id="sessionFactory"
+		class="com.collegediary.platform.hbm.CDLocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sessionFactoryHelper" ref="sessionFactoryHelper"/>
+	</bean>
+	
+	<bean id="transactionManager" class="com.collegediary.platform.hbm.CDHibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager">
+			<ref bean="transactionManager"/>
+		</property>
+    </bean>
+
+    <bean id="repeatableTransactionTemplate" class="com.collegediary.platform.hbm.TransactionTemplateFactory" factory-method="createInstance">
+    
+    	<constructor-arg><ref bean="transactionManager"/></constructor-arg>
+    	
+    	<!-- 4=REPEATABLE_READ, 8=SERIALIZABLE -->
+    	<constructor-arg><value>4</value></constructor-arg>
+    	
+    	<!-- key=isolation level, value=regex patterns to match detected Dialect class name -->
+    	<constructor-arg>
+    		<props>
+    			<prop key="8">org.hibernate.dialect.Oracle.*Dialect</prop> <!-- Oracle does not support iso level 4 -->
+    		</props>
+    	</constructor-arg>
+    </bean>
+	
+	<!-- enable the configuration of transactional behavior based on annotations -->
+  <tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<bean id="sessionFactoryHelper" class="com.collegediary.platform.hbm.CDLocalSessionFactoryBeanHelper">
+		<property name="mappingResourcePatterns">
+	      <list>
+	        <value>com/collegediary/model/**/*.hbm.xml</value>
+    	 </list>
+	    </property>
+		<property name="hibernateProperties">
+			<props>	
+				<prop key="hibernate.dialect">${clgDiry.db.dialect}</prop>
+				<prop key="hibernate.max_fetch_depth">3</prop>
+				<prop key="hibernate.show_sql">${clgDiry.db.showsql}</prop>
+				<prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">${clgDiry.db.update}</prop>
+				<prop key="hibernate.jdbc.batch_size">1000</prop>
+				<prop key="hibernate.connection.release_mode">on_close</prop>
+				<prop key="hibernate.connection.isolation">2</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${clgDiry.db.useSecondLevelCache}</prop>
+				<prop key="current_session_context_class">org.hibernate.context.ManagedSessionContext</prop>
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	   <property name="messageConverters">
+	       <list>
+	           	<ref bean="jsonConverter" />
+	       </list>
+	   </property>
+	</bean>
+	
+	<bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+	   <property name="supportedMediaTypes" value="application/json" />
+	</bean>
+	
+	<bean id="entityManager" class="com.collegediary.platform.hbm.CDEntityManager" scope="prototype">
+    	<property name="sessionFactory"  ref="sessionFactory"/>
+    </bean>
+    <bean id="serviceLocator" class="com.collegediary.platform.hbm.ServiceLocator"/>
+    <bean id="persistenceService" class="com.collegediary.platform.hbm.PersistenceService" scope="prototype">
+    	<property name="entityManager" ref="entityManager"/>
+    </bean>
+</beans>
