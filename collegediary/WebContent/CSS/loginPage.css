@@ -1,0 +1,302 @@
+@CHARSET "ISO-8859-1";
+body
+{
+   margin: 0;
+   padding: 0;
+   background-color:#C90;
+   background-image: url(images/Backgroundimage.jpg);
+   color: #000000;
+}
+
+#container {
+	width: 80%;
+	position:relative	
+	max-width: 1460px;
+	min-width: 780px;
+	background-color: green;
+	margin: 0 auto;
+	 
+}
+
+a
+{
+   color: #0000FF;
+   text-decoration: none;
+}
+a:visited
+{
+   color: #800080;
+}
+a:active
+{
+   color: #FF0000;
+}
+a:hover
+{
+   color: #0000FF;
+   text-decoration: underline;
+}
+a.Forget_Password_Style
+{
+   color: #FFFFFF;
+   background: #1E90FF;
+   text-decoration: none;
+}
+a.Forget_Password_Style:visited
+{
+   color: #FFFFFF;
+   background: #1E90FF;
+   text-decoration: none;
+}
+a.Forget_Password_Style:active
+{
+   color: #FFFFFF;
+   background: #1E90FF;
+   text-decoration: underline;
+}
+a.Forget_Password_Style:hover
+{
+   color: #FFFFFF;
+   background: #1E90FF;
+   text-decoration: underline;
+}
+#wb_loginform {
+	background-color: #1E90FF;
+	border: 5px #000000 solid;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
+	-moz-box-shadow: 0px 0px 2px #000000;
+	-webkit-box-shadow: 0px 0px 2px #000000;
+	box-shadow: 0px 0px 2px #000000;
+}
+
+#wb_Text2 {
+	background-color: transparent;
+	border: 0px #000000 solid;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	padding: 0;
+	text-align: center;
+}
+
+#wb_Text2 div {
+	text-align: center;
+}
+
+#username {
+	border: 1px #878787 solid;
+	background-color: #FFFFFF;
+	color: #A9A9A9;
+	font-family: Arial;
+	font-size: 13px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+#wb_Text3 {
+	background-color: transparent;
+	border: 0px #000000 solid;
+	padding: 0;
+	text-align: center;
+}
+
+#wb_Text3 div {
+	text-align: center;
+}
+
+#password {
+	border: 1px #878787 solid;
+	background-color: #FFFFFF;
+	color: #A9A9A9;
+	font-family: Arial;
+	font-size: 13px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+#wb_Text4 {
+	background-color: transparent;
+	border: 0px #000000 solid;
+	padding: 0;
+	text-align: center;
+}
+
+#wb_Text4 div {
+	text-align: center;
+}
+
+#login {
+	border: 2px #000000 solid;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	background-color: #FFE4E1;
+	color: #000000;
+	font-family: 'Times New Roman';
+	font-weight: bold;
+	font-size: 13px;
+}
+
+#wb_TextMenu1 {
+	background-color: transparent;
+	color: #000000;
+	font-family: 'Times New Roman';
+	font-size: 13px;
+}
+
+#wb_TextMenu1 span {
+	margin: 0px 4px 0px 0px;
+}
+
+#wb_signupform {
+	background-color: #1E90FF;
+	border: 5px #000000 solid;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
+	-moz-box-shadow: 0px 0px 2px #000000;
+	-webkit-box-shadow: 0px 0px 2px #000000;
+	box-shadow: 0px 0px 2px #000000;
+}
+
+#fullname {
+	border: 2px #000000 solid;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	background-color: #FFFFFF;
+	color: #000000;
+	font-family: 'Times New Roman';
+	font-weight: bold;
+	font-size: 20px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+#username {
+	border: 2px #000000 solid;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	background-color: #FFFFFF;
+	color: #000000;
+	font-family: 'Times New Roman';
+	font-weight: bold;
+	font-size: 20px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+#password {
+	border: 2px #000000 solid;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	background-color: #FFFFFF;
+	color: #000000;
+	font-family: 'Times New Roman';
+	font-weight: bold;
+	font-size: 20px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+#signup {
+	border: 2px #000000 solid;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	background-color: #FFDAB9;
+	color: #000000;
+	font-family: 'Times New Roman';
+	font-weight: bold;
+	font-size: 20px;
+	-moz-box-shadow: 0px 0px 2px #000000;
+	-webkit-box-shadow: 0px 0px 2px #000000;
+	box-shadow: 0px 0px 2px #000000;
+}
+
+#Editbox1 {
+	border: 2px #000000 solid;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	background-color: #FFFFFF;
+	color: #000000;
+	font-family: 'Times New Roman';
+	font-weight: bold;
+	font-size: 20px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+#Editbox2 {
+	border: 2px #000000 solid;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	background-color: #FFFFFF;
+	color: #000000;
+	font-family: 'Times New Roman';
+	font-weight: bold;
+	font-size: 20px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+#wb_Text5 {
+	background-color: transparent;
+	border: 0px #000000 solid;
+	padding: 0;
+	text-align: left;
+}
+
+#wb_Text5 div {
+	text-align: left;
+}
+
+#wb_Text6 {
+	background-color: transparent;
+	border: 0px #000000 solid;
+	padding: 0;
+	text-align: left;
+}
+
+#wb_Text6 div {
+	text-align: left;
+}
+
+#wb_Text7 {
+	background-color: transparent;
+	border: 0px #000000 solid;
+	padding: 0;
+	text-align: center;
+}
+
+#wb_Text7 div {
+	text-align: center;
+}
+
+#Image1 {
+	border-width: 0;
+}
+
+#birthday {
+	background-color: transparent;
+	font-size: 20px;
+	border: 0px #000000 solid;
+	padding: 0;
+}
+
+#gender {
+	background-color: transparent;
+	border: 0px #000000 solid;
+	padding: 0;
+	text-align: center;
+}
+
+.selected {
+	background-color: lightgreen;
+}

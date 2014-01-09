@@ -1,0 +1,12 @@
+<table ng-controller="userListController">
+<tr>
+<td><strong>Sender</strong></td>
+<td><strong>Subject</strong></td>
+<td><strong>Date</strong></td>
+</tr>
+<tr ng-repeat="message in messages" ng-click='selectedUser($index)' ng-class='{selected: $index==selectedRow}'>
+<td>{{message.id}}</td>
+<td><a href='#/view/{{message.id}}'>{{message.username}}</a></td>
+<td>{{message.password}}</td>
+</tr>
+</table>
