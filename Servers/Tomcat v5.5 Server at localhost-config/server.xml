@@ -354,7 +354,7 @@
                  pattern="common" resolveHosts="false"/>
         -->
 
-      </Host>
+      <Context docBase="collegediary" path="/collegediary" reloadable="true" source="org.eclipse.jst.j2ee.server:collegediary"/></Host>
 
     </Engine>
 
