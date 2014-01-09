@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+	<!-- Default set of monitored resources -->
+	<WatchedResource>WEB-INF/web.xml</WatchedResource>
+
+	<Resource acquireIncrement="5" auth="Container" debugUnreturnedConnectionStackTraces="true" description="DB Connection" driverClass="com.mysql.jdbc.Driver" factory="org.apache.naming.factory.BeanFactory" jdbcUrl="jdbc:mysql://localhost:3306/collegediarydb1" maxIdleTime="600" maxIdleTimeExcessConnections="300" maxPoolSize="100" minPoolSize="5" name="jdbc/clgdiryDB" numHelperThreads="20" password="root" type="com.mchange.v2.c3p0.ComboPooledDataSource" user="root"/>
+</Context>
