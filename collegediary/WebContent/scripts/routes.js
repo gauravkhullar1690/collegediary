@@ -26,9 +26,9 @@ collegediaryapp.config([ '$routeProvider', function($routeProvider) {
 	}).when('/login', {
 		templateUrl : 'htmls/login/sign-up.html',
 		controller : newAccountController
-	}).when('/additionInfo',{
-		templateUrl : 'htmls/login/additionInfoBase.html',
-		controller : additionInfoController
+	}).when('/additionlInfo',{
+		templateUrl : 'htmls/additional-info/additionl-info-base.html',
+		controller : additionalInfoController
 	}).otherwise({
 		redirectTo : '/login'
 	});

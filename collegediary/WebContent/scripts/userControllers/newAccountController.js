@@ -23,7 +23,7 @@ function newAccountController($scope, $http, $location) {
 		$http.post('rest/user/saveUserDetails', {
 			userDetails : userDetails
 		}).success(function(data, status, headers, config) {
-			$location.url('/additionInfo');
+			$location.url('/additionlInfo');
 		}).error(function(data, status, headers, config) {
 			// Handle the error
 		});
