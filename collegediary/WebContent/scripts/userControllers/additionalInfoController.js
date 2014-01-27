@@ -1,4 +1,4 @@
-function newAccountController($scope, $http, $location) {
+function additionalInfoController($scope, $http, $location) {
 
 	$scope.signUp = function() {
 		alert($scope.form);

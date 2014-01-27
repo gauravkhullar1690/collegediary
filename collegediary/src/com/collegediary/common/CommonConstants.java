@@ -33,4 +33,5 @@ public class CommonConstants
 	public static String USER_TRAVELLER = "userTraveller";
 	public static String MASTER_USER_ID = "masterUserId";
 	public static String EMAIL = "email";
+	public static Integer RANDOM_PASSWORD_LENGTH = 20;
 }

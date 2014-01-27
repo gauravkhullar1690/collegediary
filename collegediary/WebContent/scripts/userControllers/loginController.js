@@ -1,4 +1,4 @@
-function loginController($scope,$http) {
+function loginController($scope,$http,$location) {
 
 	$scope.performLogin = function() {
 		$scope.authenticateUser();
@@ -8,7 +8,7 @@ function loginController($scope,$http) {
 		$http.post('rest/user/authenticateUser', {
 			masterUser : $scope.form.masterUser
 		}).success(function(data, status, headers, config) {
-			// Do something successful.
+			$location.url('/additionInfo').hash('dashboard');
 		}).error(function(data, status, headers, config) {
 			// Handle the error
 		});

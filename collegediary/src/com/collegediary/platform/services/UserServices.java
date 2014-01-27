@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.RandomStringUtils;
 
 import com.collegediary.common.CommonConstants;
 import com.collegediary.model.user.MasterUser;
@@ -221,6 +222,7 @@ public class UserServices implements IUserServices {
 	 * 
 	 */
 	public String resetPassword(String email) {
+		String randomPassword = RandomStringUtils.randomAlphanumeric(CommonConstants.RANDOM_PASSWORD_LENGTH);
 		return null;
 	}
 }
