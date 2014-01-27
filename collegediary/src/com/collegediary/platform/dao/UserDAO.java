@@ -5,6 +5,7 @@ package com.collegediary.platform.dao;
 
 import java.util.List;
 import com.collegediary.model.user.MasterUser;
+import com.collegediary.model.user.UserDetails;
 import com.collegediary.platform.hbm.AbstractDataAccessObject;
 
 /**
@@ -12,8 +13,11 @@ import com.collegediary.platform.hbm.AbstractDataAccessObject;
  *
  */
 public class UserDAO extends AbstractDataAccessObject {
-	public MasterUser createNewUser(MasterUser masterUser) {
+	public MasterUser saveMasterUser(MasterUser masterUser) {
 		return (MasterUser)persistenceService.save(masterUser);
+	}
+	public UserDetails saveUserDetails(UserDetails userDetails) {
+		return (UserDetails)persistenceService.save(userDetails);
 	}
 	
 	public void deleteUser(MasterUser masterUser) {

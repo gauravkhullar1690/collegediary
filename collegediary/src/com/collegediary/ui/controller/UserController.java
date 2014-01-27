@@ -32,10 +32,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.collegediary.common.CommonConstants;
 import com.collegediary.model.user.MasterUser;
+import com.collegediary.model.user.UserDetails;
 import com.collegediary.platform.logging.CollegeDiaryLogger;
 import com.collegediary.platform.services.IUserServices;
+import com.collegediary.transiet.UsersTraveller;
 
 @Controller
 @RequestMapping("/user")
@@ -62,18 +67,36 @@ public class UserController implements Serializable {
 	 * 
 	 ***************************************************************************/
 	 
-	@RequestMapping(value = "/createNewUser", method = RequestMethod.POST, headers = { "Accept=application/json" })
-	public @ResponseBody Map<String, String> createNewUser(@RequestBody MasterUser masterUser){
-		CollegeDiaryLogger.trace(CLASS_NAME, "createNewUser", "Entering createNewUser method");
-		Map<String, String> returnMap = new HashMap<String,String>();
+	@RequestMapping(value = "/saveMasterUser", method = RequestMethod.POST, headers = { "Accept=application/json" })
+	public @ResponseBody Map<String, String> saveMasterUser(@RequestBody HashMap<String, MasterUser> userMap){
+		CollegeDiaryLogger.trace(CLASS_NAME, "saveMasterUser", "Entering saveMasterUser method");
+		Map<String,String> returnMap = new HashMap<String, String>();
 		try{
-			 MasterUser user = userService.createNewUser(masterUser);
-			 CollegeDiaryLogger.info(CLASS_NAME, "createNewUser : User with id = " + user.getId() + " updation Successful.", true);
+			   MasterUser masterUser = userService.saveMasterUser(userMap.get(CommonConstants.MASTER_USER));
+			   returnMap.put(CommonConstants.MASTER_USER_ID, masterUser.getId().toString());
+			  CollegeDiaryLogger.info(CLASS_NAME, "saveMasterUser : User with id = " + masterUser.getId() + " updation Successful.", true);
 		} 
 		catch (Exception e) {
-			CollegeDiaryLogger.error(CLASS_NAME, "createNewUser", e,true);
+			CollegeDiaryLogger.error(CLASS_NAME, "saveMasterUser", e,true);
 		}
-		CollegeDiaryLogger.trace(CLASS_NAME, "createNewUser", "Exiting createNewUser method");
+		CollegeDiaryLogger.trace(CLASS_NAME, "saveMasterUser", "Exiting saveMasterUser method");
+		return returnMap;
+	}
+	
+	
+	@RequestMapping(value = "/saveUserDetails", method = RequestMethod.POST, headers = { "Accept=application/json" })
+	public @ResponseBody Map<String, String> saveUserDetails(@RequestBody HashMap<String, UserDetails> userMap){
+		CollegeDiaryLogger.trace(CLASS_NAME, "saveUserDetails", "Entering saveUserDetails method");
+		Map<String,String> returnMap = new HashMap<String, String>();
+		try{
+			   UserDetails userDetails = userService.saveUserDetails(userMap.get(CommonConstants.USER_DETAILS));
+			   returnMap.put(CommonConstants.MASTER_USER, userDetails.getFirstName());
+			   CollegeDiaryLogger.info(CLASS_NAME, "saveUserDetails : User with firstName = " + userDetails.getFirstName() + " updation Successful.", true);
+		} 
+		catch (Exception e) {
+			CollegeDiaryLogger.error(CLASS_NAME, "saveUserDetails", e,true);
+		}
+		CollegeDiaryLogger.trace(CLASS_NAME, "saveUserDetails", "Exiting saveUserDetails method");
 		return returnMap;
 	}
 	
@@ -150,12 +173,11 @@ public class UserController implements Serializable {
 	 ***************************************************************************/
 	
 	@RequestMapping(value = "/authenticateUser", method = RequestMethod.POST, headers = { "Accept=application/json" })
-	public @ResponseBody boolean authenticateUser(@RequestBody MasterUser masterUser,HttpServletResponse response){
+	public @ResponseBody boolean authenticateUser(@RequestBody HashMap<String, MasterUser> requestMap,HttpServletResponse response){
 		CollegeDiaryLogger.trace(CLASS_NAME, "loggingUser", "Entering loggingUser method");
 		Map<String, String> returnMap = new HashMap<String,String>();
 		try{
-			 userService.authenticateUser(masterUser,response);
-			 System.out.println(masterUser.getId());
+			 userService.authenticateUser(requestMap.get(CommonConstants.MASTER_USER),response);
 			 CollegeDiaryLogger.info(CLASS_NAME, "authenticateUser : User logged in successfully ", true);
 		} 
 		catch (Exception e) {
@@ -192,7 +214,7 @@ public class UserController implements Serializable {
 			 for(int i=0; i < usersList.size(); i++)
 			 {
 				 user = (MasterUser)usersList.get(i);
-				 System.out.println(user.getUsername());
+				 System.out.println(user.getEmail());
 			 }
 			 CollegeDiaryLogger.info(CLASS_NAME, "findUser : All User List find Successful ", true);
 		} 
@@ -202,5 +224,34 @@ public class UserController implements Serializable {
 		}
 		CollegeDiaryLogger.trace(CLASS_NAME, "findUser", "Exiting findUser method");
 		return usersList;
+	}
+	
+	/*****************************************************************************
+	 * -----------------------------------------------------------------------
+	 * Public Methods (controller methods)
+	 * -----------------------------------------------------------------------
+	 * This is controller method which performs action on receiving request for
+	 * perform login.
+	 * 
+	 * @param MasterUser
+	 *           The bean for the user details.
+	 * 
+	 * @return :  
+	 * 
+	 ***************************************************************************/
+	
+	@RequestMapping(value = "/resetPassword", method = RequestMethod.GET, headers = { "Accept=application/json" })
+	public @ResponseBody Map<String, String> resetPassword(@RequestParam String email){
+		CollegeDiaryLogger.trace(CLASS_NAME, "resetPassword", "Entering resetPassword method");
+		Map<String, String> returnMap = new HashMap<String,String>();
+		try{
+			 userService.resetPassword(email);
+			 CollegeDiaryLogger.info(CLASS_NAME, "deleteUser : User deletion Successful ", true);
+		} 
+		catch (Exception e) {
+			CollegeDiaryLogger.error(CLASS_NAME, "resetPassword", e,true);
+		}
+		CollegeDiaryLogger.trace(CLASS_NAME, "resetPassword", "Exiting resetPassword method");
+		return returnMap;
 	}
 }

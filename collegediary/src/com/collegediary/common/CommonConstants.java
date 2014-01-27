@@ -18,7 +18,7 @@
  * @author gorav.dhiman
  */
 
-package com.collegediary.platform.hbm;
+package com.collegediary.common;
 
 public class CommonConstants 
 {
@@ -28,4 +28,9 @@ public class CommonConstants
 	public static String DOMAIN = "http://localHost:8080/";
 	public static boolean SUCCESS = true;
 	public static boolean FAILURE = false;
+	public static String MASTER_USER = "masterUser";
+	public static String USER_DETAILS = "userDetails";
+	public static String USER_TRAVELLER = "userTraveller";
+	public static String MASTER_USER_ID = "masterUserId";
+	public static String EMAIL = "email";
 }

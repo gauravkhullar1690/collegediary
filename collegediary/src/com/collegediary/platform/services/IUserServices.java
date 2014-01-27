@@ -18,10 +18,12 @@ package com.collegediary.platform.services;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
 import com.collegediary.model.user.MasterUser;
+import com.collegediary.model.user.UserDetails;
 
 /**
  * @author gaurav.khullar
@@ -35,7 +37,14 @@ public interface IUserServices {
 	 * @param masterUser
 	 * @return MasterUser that is updated in database.
 	 */
-	public MasterUser createNewUser(MasterUser masterUser);
+	public MasterUser saveMasterUser(MasterUser masterUser);
+	
+	/**
+	 * This method is used to save the user details for a master User
+	 * @param userDetails
+	 * @return UserDetails that is updated in database.
+	 */
+	public UserDetails saveUserDetails(UserDetails userDetails);
 	/**
 	 * This is method used to delete given user record from database. 
 	 * 
@@ -76,4 +85,11 @@ public interface IUserServices {
 	 * 
 	 **/
 	public boolean authenticateUser(MasterUser masterUser,HttpServletResponse response);
+	
+	/**
+	 * 
+	 * @param public boolean authenticateUser(MasterUser masterUser,HttpServletResponse response);
+	 * @return messageString
+	 */
+	public String resetPassword(String email);
 }

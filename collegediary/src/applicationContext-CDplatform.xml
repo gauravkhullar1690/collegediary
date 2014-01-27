@@ -14,7 +14,7 @@
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>/WEB-INF/appContextDB.properties</value>
+				<value>classpath:appContextDB.properties</value>
 			</list>
 		</property>
 	</bean>
@@ -65,11 +65,11 @@
 	    </property>
 		<property name="hibernateProperties">
 			<props>	
-				<prop key="hibernate.dialect">${clgDiry.db.dialect}</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.max_fetch_depth">3</prop>
-				<prop key="hibernate.show_sql">${clgDiry.db.showsql}</prop>
+				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.format_sql">false</prop>
-				<prop key="hibernate.hbm2ddl.auto">${clgDiry.db.update}</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
 				<prop key="hibernate.jdbc.batch_size">1000</prop>
 				<prop key="hibernate.connection.release_mode">on_close</prop>
 				<prop key="hibernate.connection.isolation">2</prop>

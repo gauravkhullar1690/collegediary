@@ -17,16 +17,18 @@
 
 package com.collegediary.platform.services;
 
-import java.util.Collection;
 import java.util.List;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
+
+import com.collegediary.common.CommonConstants;
 import com.collegediary.model.user.MasterUser;
+import com.collegediary.model.user.UserDetails;
 import com.collegediary.platform.dao.UserDAO;
-import com.collegediary.platform.hbm.CommonConstants;
 import com.collegediary.platform.hbm.StringUtils;
 
 /**
@@ -71,7 +73,7 @@ public class UserServices implements IUserServices {
 	
 	/*****************************************************************************
 	 * -----------------------------------------------------------------------
-	 * Public Methods (createNewUser)
+	 * Public Methods (saveMasterUser)
 	 * -----------------------------------------------------------------------
 	 * This is method used to create given user record in database. 
 	 * 
@@ -82,8 +84,25 @@ public class UserServices implements IUserServices {
 	 * 
 	 ***************************************************************************/
 	
-	public MasterUser createNewUser(MasterUser masterUser) {
-		return userDAO.createNewUser(masterUser);
+	public MasterUser saveMasterUser(MasterUser masterUser) {
+		return  userDAO.saveMasterUser(masterUser);
+	}
+	
+	/*****************************************************************************
+	 * -----------------------------------------------------------------------
+	 * Public Methods (saveUserDetails)
+	 * -----------------------------------------------------------------------
+	 * This is method used to create given user record in database. 
+	 * 
+	 * @param MasterUser
+	 *           The bean for the user details that to be create in database.
+	 * 
+	 * @return : Record that is added.
+	 * 
+	 ***************************************************************************/
+	
+	public UserDetails saveUserDetails(UserDetails userDetails) {
+		return  userDAO.saveUserDetails(userDetails);
 	}
 
 	/*****************************************************************************
@@ -173,11 +192,11 @@ public class UserServices implements IUserServices {
 		else if (StringUtils.isNotNullOrNotEmpty(masterUser.getRemmberme()) && 
 				masterUser.getRemmberme().equalsIgnoreCase("on")) {
 
-			String signatureValue = DigestUtils.md5Hex(masterUser.getUsername()
+			String signatureValue = DigestUtils.md5Hex(masterUser.getEmail()
 					+ ":" + CommonConstants.EXPIRYTIME + ":"
 					+ masterUser.getPassword() + ":"
 					+ CommonConstants.REST_SERVICES_COOKIE_KEY);
-			String tokenValue = masterUser.getUsername() + ":"
+			String tokenValue = masterUser.getEmail() + ":"
 					+ CommonConstants.EXPIRYTIME + ":" + signatureValue;
 			String tokenValueBase64 = new String(Base64.encodeBase64(tokenValue
 					.getBytes()));
@@ -196,5 +215,12 @@ public class UserServices implements IUserServices {
 		}
 		userDAO.updateUser(masterUser);
 		return result;
+	}
+
+	/**
+	 * 
+	 */
+	public String resetPassword(String email) {
+		return null;
 	}
 }

@@ -1,8 +1,10 @@
 package com.collegediary.model.user;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class MasterUser {
 	private Long id;
-	private String username;
 	private String email;
 	private String password;
 	private Boolean active;
@@ -16,12 +18,6 @@ public class MasterUser {
 		this.id = id;
 	}
 	
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
 	public String getPassword() {
 		return password;
 	}
