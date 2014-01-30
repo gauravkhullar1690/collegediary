@@ -22,6 +22,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.hibernate.HibernateException;
+
 import com.collegediary.model.user.MasterUser;
 import com.collegediary.model.user.UserDetails;
 
@@ -37,14 +39,14 @@ public interface IUserServices {
 	 * @param masterUser
 	 * @return MasterUser that is updated in database.
 	 */
-	public MasterUser saveMasterUser(MasterUser masterUser);
+	public MasterUser saveMasterUser(MasterUser masterUser)throws HibernateException, Exception ;
 	
 	/**
 	 * This method is used to save the user details for a master User
 	 * @param userDetails
 	 * @return UserDetails that is updated in database.
 	 */
-	public UserDetails saveUserDetails(UserDetails userDetails);
+	public UserDetails saveUserDetails(UserDetails userDetails)throws HibernateException, Exception;
 	/**
 	 * This is method used to delete given user record from database. 
 	 * 
@@ -54,7 +56,7 @@ public interface IUserServices {
 	 * @return : void
 	 * 
 	 **/
-	public void deleteUser(MasterUser masterUser);
+	public void deleteUser(MasterUser masterUser)throws HibernateException, Exception;
 	/**
 	 * This is method used to update given user record from database. 
 	 * 
@@ -64,32 +66,19 @@ public interface IUserServices {
 	 * @return : void
 	 * 
 	 **/
-	public void updateUser(MasterUser masterUser);
+	public void updateUser(MasterUser masterUser)throws HibernateException, Exception;
 	/**
 	 * This method is used to find the list of all users. 
 	 * 
 	 * @return : List of all users.
 	 * 
 	 **/	
-	public List<MasterUser> findUsers();
-	/**
-	 * This is method that check whether user is registered or not. 
-	 * 
-	 * @param MasterUser
-	 *           The bean for the user details.
-	 *           
-	 * @param HttpServletResponse
-	 * 			 Response object to add cookie
-	 * 
-	 * @return :  True or False
-	 * 
-	 **/
-	public boolean authenticateUser(MasterUser masterUser,HttpServletResponse response);
+	public String authenticateUser(MasterUser masterUser)throws HibernateException, Exception;
 	
 	/**
 	 * 
 	 * @param public boolean authenticateUser(MasterUser masterUser,HttpServletResponse response);
 	 * @return messageString
 	 */
-	public String resetPassword(String email);
+	public String resetPassword(String email)throws HibernateException, Exception;
 }

@@ -17,20 +17,26 @@
 
 package com.collegediary.platform.services;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.MaskFormatter;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.RandomStringUtils;
+import org.hibernate.HibernateException;
 
 import com.collegediary.common.CommonConstants;
+import com.collegediary.common.EmailNotifier;
 import com.collegediary.model.user.MasterUser;
 import com.collegediary.model.user.UserDetails;
 import com.collegediary.platform.dao.UserDAO;
 import com.collegediary.platform.hbm.StringUtils;
+import com.collegediary.platform.logging.CollegeDiaryLogger;
 
 /**
  * @author gaurav.khullar
@@ -39,190 +45,226 @@ import com.collegediary.platform.hbm.StringUtils;
 public class UserServices implements IUserServices {
 
 	private UserDAO userDAO;
+	private final String CLASS_NAME = this.getClass().getName();
 
 	/*****************************************************************************
 	 * -----------------------------------------------------------------------
 	 * Public Methods (getUserDAO)
 	 * -----------------------------------------------------------------------
-	 * This is getter method for setting userDAO variable 
+	 * This is getter method for setting userDAO variable
 	 * 
-	 * @return : UserDAO
-	 * 		  The initialised class variable is returned. 
+	 * @return : UserDAO The initialised class variable is returned.
 	 * 
 	 ***************************************************************************/
-	
+
 	public UserDAO getUserDAO() {
 		return userDAO;
 	}
-	
+
 	/*****************************************************************************
 	 * -----------------------------------------------------------------------
 	 * Public Methods (setUserDAO)
 	 * -----------------------------------------------------------------------
-	 * This is setter method for setting userDAO variable 
+	 * This is setter method for setting userDAO variable
 	 * 
 	 * @param UserDAO
-	 * 		  The object that is used to initialise class variable. 
+	 *            The object that is used to initialise class variable.
 	 * 
 	 * @return : void
 	 * 
 	 ***************************************************************************/
-	
+
 	public void setUserDAO(UserDAO userDAO) {
 		this.userDAO = userDAO;
 	}
-	
+
 	/*****************************************************************************
 	 * -----------------------------------------------------------------------
 	 * Public Methods (saveMasterUser)
 	 * -----------------------------------------------------------------------
-	 * This is method used to create given user record in database. 
+	 * This is method used to create given user record in database.
 	 * 
 	 * @param MasterUser
-	 *           The bean for the user details that to be create in database.
+	 *            The bean for the user details that to be create in database.
 	 * 
 	 * @return : Record that is added.
+	 * @throws Exception
+	 * @throws HibernateException
 	 * 
 	 ***************************************************************************/
-	
-	public MasterUser saveMasterUser(MasterUser masterUser) {
-		return  userDAO.saveMasterUser(masterUser);
+
+	public MasterUser saveMasterUser(MasterUser masterUser)
+			throws HibernateException, Exception {
+		return userDAO.saveMasterUser(masterUser);
 	}
-	
+
 	/*****************************************************************************
 	 * -----------------------------------------------------------------------
 	 * Public Methods (saveUserDetails)
 	 * -----------------------------------------------------------------------
-	 * This is method used to create given user record in database. 
+	 * This is method used to create given user record in database.
 	 * 
 	 * @param MasterUser
-	 *           The bean for the user details that to be create in database.
+	 *            The bean for the user details that to be create in database.
 	 * 
 	 * @return : Record that is added.
+	 * @throws Exception
+	 * @throws HibernateException
 	 * 
 	 ***************************************************************************/
-	
-	public UserDetails saveUserDetails(UserDetails userDetails) {
-		return  userDAO.saveUserDetails(userDetails);
+
+	public UserDetails saveUserDetails(UserDetails userDetails)
+			throws HibernateException, Exception {
+		return userDAO.saveUserDetails(userDetails);
 	}
 
 	/*****************************************************************************
 	 * -----------------------------------------------------------------------
 	 * Public Methods (deleteUser)
 	 * -----------------------------------------------------------------------
-	 * This is method used to delete given user record from database. 
+	 * This is method used to delete given user record from database.
 	 * 
 	 * @param MasterUser
-	 *           The bean for the user details that to be delete in database.
+	 *            The bean for the user details that to be delete in database.
 	 * 
 	 * @return : void
+	 * @throws Exception
+	 * @throws HibernateException
 	 * 
 	 ***************************************************************************/
-	
-	public void deleteUser(MasterUser masterUser) {
+
+	public void deleteUser(MasterUser masterUser) throws HibernateException,
+			Exception {
 		userDAO.deleteUser(masterUser);
 	}
-	
+
 	/*****************************************************************************
 	 * -----------------------------------------------------------------------
 	 * Public Methods (updateUser)
 	 * -----------------------------------------------------------------------
-	 * This is method used to update given user record in database. 
+	 * This is method used to update given user record in database.
 	 * 
 	 * @param MasterUser
-	 *           The bean for the user details that to be updated in database.
+	 *            The bean for the user details that to be updated in database.
 	 * 
 	 * @return : void
+	 * @throws Exception
+	 * @throws HibernateException
 	 * 
 	 ***************************************************************************/
-	
-	public void updateUser(MasterUser masterUser) {
-		userDAO.updateUser(masterUser);
-	}
-	
-	/*****************************************************************************
-	 * -----------------------------------------------------------------------
-	 * Public Methods (findUsers)
-	 * -----------------------------------------------------------------------
-	 * This method is used to find the list of all users. 
-	 * 
-	 * @return : List of all users.
-	 * 
-	 ***************************************************************************/
-	
-	public List<MasterUser> findUsers() {
-		return userDAO.findUsers();
+
+	public void updateUser(MasterUser masterUser) throws HibernateException,
+			Exception {
+		userDAO.updateMasterUser(masterUser);
 	}
 
 	/*****************************************************************************
 	 * -----------------------------------------------------------------------
 	 * Public Methods (authenticateUser)
 	 * -----------------------------------------------------------------------
-	 * This is method that check whether user is registered or not. 
+	 * This is method that check whether user is registered or not.
 	 * 
 	 * @param MasterUser
-	 *           The bean for the user details.
-	 *           
-	 * @param HttpServletResponse
-	 * 			 Response object to add cookie
+	 *            The bean for the user details.
 	 * 
-	 * @return :  True or False
+	 * @param HttpServletResponse
+	 *            Response object to add cookie
+	 * 
+	 * @return : True or False
+	 * @throws Exception
+	 * @throws HibernateException
 	 * 
 	 ***************************************************************************/
 
-	public boolean authenticateUser(MasterUser masterUser,HttpServletResponse response) {
-		boolean result = CommonConstants.FAILURE;		
-		if(StringUtils.isNotNullOrNotEmpty(masterUser.getToken())){
-			String token = "";//new String(Base64.decodeBase64(masterUser.getToken()));
-			String username = token.substring(0, token.indexOf(':'));
-			List<MasterUser> users = userDAO.findUserByName(username);
+	public String authenticateUser(MasterUser masterUser) throws HibernateException, Exception {
+		String tokenValueBase64 = null;
+		if (StringUtils.isNotNullOrNotEmpty(masterUser.getToken())) {
+			// login using the token
+			String token = new String(Base64.decodeBase64(masterUser.getToken().getBytes()));
+			String email = token.substring(0, token.indexOf(':'));
+			List<MasterUser> users = userDAO.findMasterUserByEmail(email);
 			System.out.println(token.substring(0, token.indexOf(':')));
 			System.out.println(token.substring(token.lastIndexOf(':')));
-			
-			/** I have username here fetching record & matching it provides login **/
-			/** Have selectAll function providing allUser list can do we that also **/
-			
-			for (int i=0; i < users.size();i++){
+
+			/**
+			 * I have username here fetching record & matching it provides login
+			 **/
+			/**
+			 * Have selectAll function providing allUser list can do we that
+			 * also
+			 **/
+
+			for (int i = 0; i < users.size(); i++) {
 				MasterUser user = users.get(i);
-				if (token.equals(user.getToken())){
-				
-					result = CommonConstants.SUCCESS;
+				if (token.equals(user.getToken())) {
+
+					//result = CommonConstants.SUCCESS;
 				}
 			}
-		}
-		else if (StringUtils.isNotNullOrNotEmpty(masterUser.getRemmberme()) && 
-				masterUser.getRemmberme().equalsIgnoreCase("on")) {
-
+		} else if (StringUtils.isNotNullOrNotEmpty(masterUser.getRemmberme())
+				&& masterUser.getRemmberme().equalsIgnoreCase("true")) {
+			// login using the token 
 			String signatureValue = DigestUtils.md5Hex(masterUser.getEmail()
 					+ ":" + CommonConstants.EXPIRYTIME + ":"
 					+ masterUser.getPassword() + ":"
 					+ CommonConstants.REST_SERVICES_COOKIE_KEY);
 			String tokenValue = masterUser.getEmail() + ":"
 					+ CommonConstants.EXPIRYTIME + ":" + signatureValue;
-			String tokenValueBase64 = new String(Base64.encodeBase64(tokenValue
+			tokenValueBase64 = new String(Base64.encodeBase64(tokenValue
 					.getBytes()));
-			
-			Cookie cookie = new Cookie(
-					CommonConstants.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY_REST_SERVICES,	
-					tokenValueBase64);
-			if (StringUtils.isNotNullOrNotEmpty(CommonConstants.DOMAIN)) {
-				//cookie.setDomain(CommonConstants.DOMAIN);
-			}
-			System.out.println("Cookie = "+ tokenValue + " token = "+ tokenValueBase64 + "sign value = "+ signatureValue);
-			cookie.setPath("/");
 			masterUser.setToken(tokenValueBase64);
-			response.addCookie(cookie);
-			result = CommonConstants.SUCCESS;
+			Map<String, Object> tempMap = new HashMap<String, Object>();
+			tempMap.put("token", masterUser.getToken());
+			userDAO.updateMasterUser(masterUser.getEmail(),tempMap);
+			return tokenValueBase64;
+		} else {
+			// normal login without remember me
+			List<MasterUser> masterUserList = userDAO.findMasterUserByEmail(masterUser.getEmail());
+			if(masterUserList != null && !masterUserList.isEmpty()){
+				if(masterUserList.get(0).getPassword().equals(masterUser.getPassword())){
+					return CommonConstants.SUCCESS_MSG;
+				} else
+					return null;
+			} else 
+				return null;
 		}
-		userDAO.updateUser(masterUser);
-		return result;
+		return null;
 	}
 
 	/**
 	 * 
 	 */
-	public String resetPassword(String email) {
-		String randomPassword = RandomStringUtils.randomAlphanumeric(CommonConstants.RANDOM_PASSWORD_LENGTH);
-		return null;
+	public String resetPassword(String email) throws HibernateException,
+			Exception {
+		Map<String, String> resultMap = new HashMap<String, String>();
+		try {
+			List<MasterUser> userList = userDAO.findMasterUserByEmail(email);
+			if (userList != null && !userList.isEmpty()) {
+				String randomPassword = RandomStringUtils.randomAlphanumeric(CommonConstants.RANDOM_PASSWORD_LENGTH);
+				try {
+					Map<String, Object> tempMap = new HashMap<String, Object>();
+					tempMap.put("password", randomPassword);
+					userDAO.updateMasterUser(email,tempMap);
+				} catch (Exception e) {
+					CollegeDiaryLogger.error(CLASS_NAME,"resetPassword Exception in updating new Passowrd for User "+ email, e, true);
+					throw e;
+				}
+				String[] toList = new String[1];
+				toList[0] = email;
+				try {
+					EmailNotifier.sendNewPasswordMail(toList, randomPassword,CommonConstants.CONTACT_EMAIL_ADDRESS);
+				} catch (Exception e) {
+					CollegeDiaryLogger.error(CLASS_NAME,"resetPassword Exception in Sending Email",	e, true);
+					throw e;
+				}
+				return CommonConstants.PASSWORD_RESET_SUCCESS;
+			} else {
+				CollegeDiaryLogger.trace(CLASS_NAME, "resetPassword","Unable to find user with email");
+				return CommonConstants.USER_EMAIL_NOT_FOUND;
+			}
+		} catch (Exception e) {
+			CollegeDiaryLogger.error(CLASS_NAME,"resetPassword unable to find user with email " + email, e,	true);
+			throw e;
+		}
 	}
 }

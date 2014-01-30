@@ -1,14 +1,28 @@
-function loginController($scope,$http,$location) {
-
+function loginController($scope,$http,$location, $cookieStore,commonService) {
+	
 	$scope.performLogin = function() {
-		$scope.authenticateUser();
+		if(typeof ($cookieStore.get('collegediarycookie')) !== 'undefined') {
+			var masterUser = {
+					token : $cookieStore.get('collegediarycookie')
+				};
+			$scope.authenticateUser(masterUser);	
+		} else if(typeof ($scope.form) !== 'undefined'){
+			$scope.authenticateUser($scope.form.masterUser);
+		}
 	};
 	
-	$scope.authenticateUser = function() {
+	$scope.authenticateUser = function(matserUser) {
+		
 		$http.post('rest/user/authenticateUser', {
-			masterUser : $scope.form.masterUser
+			masterUser : matserUser
 		}).success(function(data, status, headers, config) {
-			$location.url('/additionInfo').hash('dashboard');
+			if(data !== null){
+				$cookieStore.put('collegediarycookie',data);
+				$location.url('/home');
+			} else {
+				bootbox.alert("Please check emailId or password");
+				$location.url('/login');
+			}
 		}).error(function(data, status, headers, config) {
 			// Handle the error
 		});
@@ -28,23 +42,16 @@ function loginController($scope,$http,$location) {
 			}
 		};
 
-		$scope.customDialog(title,message,html,buttons);
+		commonService.customDialog(title,message,html,buttons);
 	};
 
-	$scope.customDialog = function(title, message, html, buttons) {
-		message = message + ('\n') + html;
-		bootbox.dialog({
-			message : message,
-			title : title,
-			buttons : buttons
+	$scope.resetPassword = function(email) {
+		$http.get('rest/user/resetPassword?email='+email).success(function(data, status, headers, config) {
+			bootbox.alert(data);
+		}).error(function(data, status, headers, config) {
+			bootbox.alert(data);
 		});
 	};
 	
-	$scope.resetPassword = function(email) {
-		$http.get('rest/user/resetPassword?email='+email).success(function(data, status, headers, config) {
-			bootbox.alert("Your new password has been dispatched from our side. Please check your email in some time");
-		}).error(function(data, status, headers, config) {
-			bootbox.alert("Currently unable to reset your password. Please try again in some time or contact Us");
-		});
-	};
+	$scope.performLogin();
 }

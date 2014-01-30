@@ -1,15 +1,13 @@
 <link href="css/additional-info-base.css" rel="stylesheet">
-<div class="additional-info-base container">
+<div ng-controller="additionalInfoController" class="additional-info-base-pages container">
 	<ul class="pagination">
-		<li><a href="#">&laquo;</a>
+		<li><a ng-click="switchView(1)">Step 1: Find your Friends</a>
 		</li>
-		<li><a href="#">Step 1: Find your Friends</a>
+		<li><a ng-click="switchView(2)">Step 2: Profile Information</a>
 		</li>
-		<li><a href="#">Step 2: Profile Information</a>
-		</li>
-		<li><a href="#">Step 3: Profile Picture</a>
-		</li>
-		<li><a href="#">&raquo;</a>
+		<li><a ng-click="switchView(3)">Step 3: Profile Picture</a>
 		</li>
 	</ul>
+</div>
+<div class="additional-info-page container">
 </div>

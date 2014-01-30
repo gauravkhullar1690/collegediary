@@ -85,8 +85,8 @@ public class CDEntityManager extends HibernateDaoSupport{
 		getSession().setFlushMode(flushMode);		
 	}
  
-	public List<MasterUser> selectAll(){
-        DetachedCriteria criteria = DetachedCriteria.forClass(MasterUser.class);
+	public List<Object> selectAll(Class objClass){
+        DetachedCriteria criteria = DetachedCriteria.forClass(objClass);
         return getHibernateTemplate().findByCriteria(criteria);
     }
 

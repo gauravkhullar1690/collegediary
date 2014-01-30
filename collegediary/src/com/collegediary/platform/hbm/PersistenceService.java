@@ -6,6 +6,7 @@ package com.collegediary.platform.hbm;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -93,9 +94,9 @@ public class PersistenceService implements IPersistenceService {
 		entityManager.clear();
 	}
 	
-	public List<MasterUser> findUsers()
+	public List<Object> selectAll(Class entityName)
 	{
-		return entityManager.selectAll();
+		return entityManager.selectAll(entityName);
 	}
 
 	public List executeQuery(String sql, Object[] params) {
@@ -145,6 +146,32 @@ public class PersistenceService implements IPersistenceService {
 	        }
         }
         int numUpdate = query.executeUpdate();
+        CollegeDiaryLogger.trace(this.getClass().getName(), "updateQuery", "numUpdate : " + numUpdate);
+        return numUpdate;
+    }
+    
+    public int updateEntity(Class entityClassName,String uniquePropertyName, Object uniquePropertyValue,Map<String, Object> properties) {
+    	CollegeDiaryLogger.trace(this.getClass().getName(), "updateEntity", "updating "+entityClassName.getName()+" properties"+properties.keySet().toArray().toString());
+    	Map<String,Object> tempMap = new HashMap<String, Object>();
+    	tempMap = properties;
+    	StringBuffer sql = new StringBuffer();
+    	sql.append("UPDATE "+entityClassName.getName()).append(" alisaName SET ");
+    	List<Object> params = new ArrayList<Object>();
+    	if(tempMap != null){
+    		for(String parmName : tempMap.keySet())
+    		{
+        		if(tempMap.size() >1){
+        			sql.append(parmName).append(" = ?").append(" ,");
+        			tempMap.remove(parmName);
+        		} else {
+        			sql.append(parmName).append(" = ?");
+        		}
+        		params.add(properties.get(parmName));
+    		}
+    	}
+    	sql.append(" WHERE alisaName.").append(uniquePropertyName).append(" = ?");
+    	params.add(uniquePropertyValue);
+    	int numUpdate = updateQuery(sql.toString(), params.toArray());
         CollegeDiaryLogger.trace(this.getClass().getName(), "updateQuery", "numUpdate : " + numUpdate);
         return numUpdate;
     }

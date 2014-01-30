@@ -1,0 +1,1 @@
+var collegediaryapp = angular.module('collegediary', ['ngRoute','ngCookies']);

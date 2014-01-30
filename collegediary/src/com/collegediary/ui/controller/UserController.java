@@ -173,11 +173,11 @@ public class UserController implements Serializable {
 	 ***************************************************************************/
 	
 	@RequestMapping(value = "/authenticateUser", method = RequestMethod.POST, headers = { "Accept=application/json" })
-	public @ResponseBody boolean authenticateUser(@RequestBody HashMap<String, MasterUser> requestMap,HttpServletResponse response){
+	public @ResponseBody String authenticateUser(@RequestBody HashMap<String, MasterUser> requestMap){
 		CollegeDiaryLogger.trace(CLASS_NAME, "loggingUser", "Entering loggingUser method");
-		Map<String, String> returnMap = new HashMap<String,String>();
+		String token = null;
 		try{
-			 userService.authenticateUser(requestMap.get(CommonConstants.MASTER_USER),response);
+			 token = userService.authenticateUser(requestMap.get(CommonConstants.MASTER_USER));
 			 CollegeDiaryLogger.info(CLASS_NAME, "authenticateUser : User logged in successfully ", true);
 		} 
 		catch (Exception e) {
@@ -185,7 +185,7 @@ public class UserController implements Serializable {
 			CollegeDiaryLogger.error(CLASS_NAME, "authenticateUser catch", e,true);
 		}
 		CollegeDiaryLogger.trace(CLASS_NAME, "authenticateUser", "Exiting authenticateUser method");
-		return true;
+		return token;
 	}
 	
 	/*****************************************************************************
@@ -210,7 +210,7 @@ public class UserController implements Serializable {
 		ArrayList<MasterUser> usersList = null;
 		MasterUser user = null;
 		try{
-			 usersList = (ArrayList) userService.findUsers();
+			 //usersList = (ArrayList) userService.findUsers();
 			 for(int i=0; i < usersList.size(); i++)
 			 {
 				 user = (MasterUser)usersList.get(i);
@@ -241,17 +241,18 @@ public class UserController implements Serializable {
 	 ***************************************************************************/
 	
 	@RequestMapping(value = "/resetPassword", method = RequestMethod.GET, headers = { "Accept=application/json" })
-	public @ResponseBody Map<String, String> resetPassword(@RequestParam String email){
+	public @ResponseBody String resetPassword(@RequestParam String email)throws Exception{
 		CollegeDiaryLogger.trace(CLASS_NAME, "resetPassword", "Entering resetPassword method");
-		Map<String, String> returnMap = new HashMap<String,String>();
+		String result = "";
 		try{
-			 userService.resetPassword(email);
+			 result = userService.resetPassword(email);
 			 CollegeDiaryLogger.info(CLASS_NAME, "deleteUser : User deletion Successful ", true);
 		} 
 		catch (Exception e) {
 			CollegeDiaryLogger.error(CLASS_NAME, "resetPassword", e,true);
+			return CommonConstants.PASSWORD_RESET_FAILURE;
 		}
 		CollegeDiaryLogger.trace(CLASS_NAME, "resetPassword", "Exiting resetPassword method");
-		return returnMap;
+		return result;
 	}
 }

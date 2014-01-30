@@ -26,9 +26,10 @@ public interface IPersistenceService {
 	 public void remove(List objs);    
 	 public void saveOrUpdate(final Object obj);
 	 public void persist(Object obj);
-	 public List<MasterUser> findUsers();
+	 public List<Object> selectAll(Class entityName);
 	 public List executeQuery(String sql, Object[] params);
 	 public void updateQuery(String sqlQuery);
 	 public int updateQuery(String sql, Object[] params);
 	 public int updateQuery(String sql, Map<String, Object> namedParams);
+	 public int updateEntity(Class entityClassName,String uniquePropertyName, Object uniquePropertyValue,Map<String, Object> properties);
 }

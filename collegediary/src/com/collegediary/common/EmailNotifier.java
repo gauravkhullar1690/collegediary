@@ -18,30 +18,28 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import com.collegediary.platform.logging.CollegeDiaryLogger;
+
 /**
  * 
- * @author INTEL
+ * @author gaurav.khullar
  */
 public class EmailNotifier {
+	private final static String CLASS_NAME = "com.collegediary.common.EmailNotifier";
 
-	String SMTP_PORT = "465";
-	String username = "daburmaintenance@gmail.com";
-	String password = "daburmails";
-	String host = "smtp.gmail.com";
-	String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
-	String Password = "";
-
-	public void sendSSLMessage(String recipients[], String subject,
+	public static void sendSSLMessage(String recipients[], String subject,
 			String message) throws MessagingException {
 		boolean debug = true;
 
 		Properties props = new Properties();
-		props.put("mail.smtp.host", host);
+		props.put("mail.smtp.host", CommonConstants.EmailParameters.HOST);
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.debug", "true");
-		props.put("mail.smtp.port", SMTP_PORT);
-		props.put("mail.smtp.socketFactory.port", SMTP_PORT);
-		props.put("mail.smtp.socketFactory.class", SSL_FACTORY);
+		props.put("mail.smtp.port", CommonConstants.EmailParameters.SMTP_PORT);
+		props.put("mail.smtp.socketFactory.port",
+				CommonConstants.EmailParameters.SMTP_PORT);
+		props.put("mail.smtp.socketFactory.class",
+				CommonConstants.EmailParameters.SSL_FACTORY);
 		props.put("mail.smtp.socketFactory.fallback", "false");
 
 		Session session = Session.getDefaultInstance(props,
@@ -49,20 +47,23 @@ public class EmailNotifier {
 
 					protected PasswordAuthentication getPasswordAuthentication() {
 
-						return new PasswordAuthentication(username, password);
+						return new PasswordAuthentication(
+								CommonConstants.EmailParameters.USERNAME,
+								CommonConstants.EmailParameters.PASSWORD);
 					}
 				});
 
 		session.setDebug(debug);
 
 		Message msg = new MimeMessage(session);
-		InternetAddress addressFrom = new InternetAddress(username);
+		InternetAddress addressFrom = new InternetAddress(
+				CommonConstants.EmailParameters.USERNAME);
 		msg.setFrom(addressFrom);
 
 		InternetAddress addressTo = null;
-		for (int i = 0; i < recipients.length; i++) {
+		for (String recepient : recipients) {
 
-			addressTo = new InternetAddress(recipients[i]);
+			addressTo = new InternetAddress(recepient);
 
 			msg.setRecipient(Message.RecipientType.TO, addressTo);
 
@@ -138,4 +139,28 @@ public class EmailNotifier {
 			return false;
 		}
 	}
+
+	public static boolean sendNewPasswordMail(String to[], String newPassword,
+			String contactEmail) throws Exception {
+		Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+		try {
+			String subject = "College Diary : Your Password has been reset";
+			String message = "This to a automatically generated mail please don't reply:\n\n "
+					+ "We have recived a request to reset your password.\n\n"
+					+ "Your new Password is \n\n"
+					+ newPassword
+					+ " .\n\n"
+					+ "If your have not requested to reset the password please reply us back @ "
+					+ contactEmail + "as soon as you see this email.";
+
+			sendSSLMessage(to, subject, message);
+			System.out.println("Sucessfully Sent mail to All Users");
+			return true;
+		} catch (Exception e) {
+			CollegeDiaryLogger
+					.error(CLASS_NAME, "sendNewPasswordMail", e, true);
+			return false;
+		}
+	}
+
 }

@@ -18,7 +18,6 @@
  * Function : emailRouteConfig Description : This is to provide a routehandler
  * for all http request Inputs : Route Provider. Outputs :
  ******************************************************************************/
-var collegediaryapp = angular.module('collegediary', ['ngRoute','ngCookies']);
 collegediaryapp.config([ '$routeProvider', function($routeProvider) {
 	$routeProvider.when('/', {
 		templateUrl : 'htmls/login/sign-up.html',

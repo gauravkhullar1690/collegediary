@@ -15,7 +15,7 @@
 		</id>
 		
 		<property name="email" type="java.lang.String">
-			<column name="EMAIL"  />
+			<column name="EMAIL"  unique="true"/>
 		</property>
 		
 		<property name="password" type="java.lang.String">
