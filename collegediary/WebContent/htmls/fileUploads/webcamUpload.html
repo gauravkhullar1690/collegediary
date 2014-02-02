@@ -1,0 +1,18 @@
+<link href="css/sign-up.css" rel="stylesheet">
+<div class="container">
+	<div style="width: 330px; float: left;">
+		<div id="webcam"></div>
+			<div style="margin: 5px;">
+				<select id="cameraNames" size="1" onChange="changeCamera()" style="width: 245px; font-size: 10px;display:none ;height: 25px;"></select>
+			</div>
+		</div>
+	
+		<div style="width: 200px; float: left;">
+			<form method="post" id="webcamUpload" action="rest/user/webcamUpload">
+				<p><textarea name="txtPic"  id="txtPic" style="width: 190px; height: 70px;display: none"></textarea></p>
+				<p><img id="image" style="width: 200px; height: 153px;" /></p>
+				<button class="btn btn-primary btn-lg" type="submit" id="btnSnapshot" onclick="base64_tofield()">Take Snapshot</button>
+			</form>
+		</div>
+	</div>
+</div>

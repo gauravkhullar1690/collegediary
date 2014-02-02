@@ -21,12 +21,16 @@ package com.collegediary.ui.controller;
 
  *
  **/
+
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,14 +38,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.collegediary.common.CommonConstants;
 import com.collegediary.model.user.MasterUser;
 import com.collegediary.model.user.UserDetails;
 import com.collegediary.platform.logging.CollegeDiaryLogger;
 import com.collegediary.platform.services.IUserServices;
-import com.collegediary.transiet.UsersTraveller;
-
 @Controller
 @RequestMapping("/user")
 public class UserController implements Serializable {
@@ -254,5 +257,55 @@ public class UserController implements Serializable {
 		}
 		CollegeDiaryLogger.trace(CLASS_NAME, "resetPassword", "Exiting resetPassword method");
 		return result;
+	}
+
+	/*****************************************************************************
+	 * -----------------------------------------------------------------------
+	 * Public Methods (controller methods)
+	 * -----------------------------------------------------------------------
+	 * This is controller method which performs action on receiving request for
+	 * fileUpload.
+	 * 
+	 * @param MultipartHttpServletRequest
+	 *            The multiple files Servlet request.
+	 * 
+	 * @return : SUCCESS or FAILURE
+	 * 
+	 ***************************************************************************/
+
+	@RequestMapping(value = "/fileUpload", method = RequestMethod.POST)
+	public @ResponseBody boolean fileUpload(MultipartHttpServletRequest request) {
+		boolean resp = CommonConstants.FAILURE;
+		CollegeDiaryLogger.trace(CLASS_NAME, "fileUpload","Entering fileUpload method");
+		resp = userService.fileUpload(request);
+		CollegeDiaryLogger.trace(CLASS_NAME, "fileUpload","Exiting fileUpload method");
+		return resp;
+	}
+
+	/*****************************************************************************
+	 * -----------------------------------------------------------------------
+	 * Public Methods (controller methods)
+	 * -----------------------------------------------------------------------
+	 * This is controller method which performs action on receiving request for
+	 * webcamUpload.
+	 * 
+	 * @param HttpServletRequest
+	 *        	 The HTTP files Servlet request.
+	 * 
+	 * @return : SUCCESS or FAILURE
+	 * 
+	 ***************************************************************************/
+	
+	@RequestMapping(value = "/webcamUpload", method = RequestMethod.POST)
+	public @ResponseBody boolean webcamUpload(HttpServletRequest request,HttpServletResponse response) {
+		
+		boolean resp = CommonConstants.FAILURE;
+		CollegeDiaryLogger.trace(CLASS_NAME, "webcamUpload","Entering webcamUpload method");
+		resp = userService.webcamUpload(request);
+		CollegeDiaryLogger.trace(CLASS_NAME, "webcamUpload","Exiting webcamUpload method");
+		/* A local fix trying to find better solution */
+		try{response.sendRedirect("http://localhost:8080/collegediary/#/additionalInfo");}catch(Exception e){}
+		return resp;
+
 	}
 }

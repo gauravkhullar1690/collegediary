@@ -31,6 +31,7 @@ public class CommonConstants {
 	public static String USER_DETAILS = "userDetails";
 	public static String USER_TRAVELLER = "userTraveller";
 	public static String MASTER_USER_ID = "masterUserId";
+	public static String PATH = "C:\\Users\\Gorav\\Desktop\\collegediary\\WebContent\\images\\";
 	public static String EMAIL = "email";
 	public static Integer RANDOM_PASSWORD_LENGTH = 20;
 	public static String USER_EMAIL_NOT_FOUND = "We were unable to find any user with the email id you provided.\n\nPlease try again by giving correct email id.";

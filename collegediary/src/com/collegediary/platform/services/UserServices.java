@@ -17,21 +17,33 @@
 
 package com.collegediary.platform.services;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.swing.text.MaskFormatter;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+
 import org.hibernate.HibernateException;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.collegediary.common.CommonConstants;
 import com.collegediary.common.EmailNotifier;
+import com.collegediary.model.user.FileMeta;
 import com.collegediary.model.user.MasterUser;
 import com.collegediary.model.user.UserDetails;
 import com.collegediary.platform.dao.UserDAO;
@@ -45,6 +57,7 @@ import com.collegediary.platform.logging.CollegeDiaryLogger;
 public class UserServices implements IUserServices {
 
 	private UserDAO userDAO;
+	private HttpSession session = null;
 	private final String CLASS_NAME = this.getClass().getName();
 
 	/*****************************************************************************
@@ -176,9 +189,11 @@ public class UserServices implements IUserServices {
 	 * 
 	 ***************************************************************************/
 
-	public String authenticateUser(MasterUser masterUser) throws HibernateException, Exception {
+	public String authenticateUser(MasterUser masterUser) throws HibernateException, Exception 
+	{
 		String tokenValueBase64 = null;
-		if (StringUtils.isNotNullOrNotEmpty(masterUser.getToken())) {
+		if (StringUtils.isNotNullOrNotEmpty(masterUser.getToken())) 
+		{
 			// login using the token
 			String token = new String(Base64.decodeBase64(masterUser.getToken().getBytes()));
 			String email = token.substring(0, token.indexOf(':'));
@@ -194,77 +209,180 @@ public class UserServices implements IUserServices {
 			 * also
 			 **/
 
-			for (int i = 0; i < users.size(); i++) {
+			for (int i = 0; i < users.size(); i++) 
+			{
 				MasterUser user = users.get(i);
-				if (token.equals(user.getToken())) {
-
-					//result = CommonConstants.SUCCESS;
+				if (token.equals(user.getToken())) 
+				{
+				
+					return CommonConstants.SUCCESS_MSG;
 				}
 			}
-		} else if (StringUtils.isNotNullOrNotEmpty(masterUser.getRemmberme())
-				&& masterUser.getRemmberme().equalsIgnoreCase("true")) {
-			// login using the token 
-			String signatureValue = DigestUtils.md5Hex(masterUser.getEmail()
-					+ ":" + CommonConstants.EXPIRYTIME + ":"
-					+ masterUser.getPassword() + ":"
-					+ CommonConstants.REST_SERVICES_COOKIE_KEY);
-			String tokenValue = masterUser.getEmail() + ":"
-					+ CommonConstants.EXPIRYTIME + ":" + signatureValue;
-			tokenValueBase64 = new String(Base64.encodeBase64(tokenValue
-					.getBytes()));
-			masterUser.setToken(tokenValueBase64);
-			Map<String, Object> tempMap = new HashMap<String, Object>();
-			tempMap.put("token", masterUser.getToken());
-			userDAO.updateMasterUser(masterUser.getEmail(),tempMap);
-			return tokenValueBase64;
-		} else {
+		} 
+		else  
+		{
+
 			// normal login without remember me
 			List<MasterUser> masterUserList = userDAO.findMasterUserByEmail(masterUser.getEmail());
-			if(masterUserList != null && !masterUserList.isEmpty()){
-				if(masterUserList.get(0).getPassword().equals(masterUser.getPassword())){
+			if(masterUserList != null && !masterUserList.isEmpty())
+			{
+				if(masterUserList.get(0).getPassword().equals(masterUser.getPassword()))
+				{
+
+					if (StringUtils.isNotNullOrNotEmpty(masterUser.getRemmberme())
+							&& masterUser.getRemmberme().equalsIgnoreCase("true"))
+					{
+						// login using the token 
+						String signatureValue = DigestUtils.md5Hex(masterUser.getEmail()
+								+ ":" + CommonConstants.EXPIRYTIME + ":"
+								+ masterUser.getPassword() + ":"
+								+ CommonConstants.REST_SERVICES_COOKIE_KEY);
+						String tokenValue = masterUser.getEmail() + ":"
+						+ CommonConstants.EXPIRYTIME + ":" + signatureValue;
+						tokenValueBase64 = new String(Base64.encodeBase64(tokenValue
+								.getBytes()));
+						masterUser.setToken(tokenValueBase64);
+						Map<String, Object> tempMap = new HashMap<String, Object>();
+						tempMap.put("token", masterUser.getToken());
+						userDAO.updateMasterUser(masterUser.getEmail(),tempMap);
+					}
 					return CommonConstants.SUCCESS_MSG;
-				} else
+				}
+				else 
+				{
 					return null;
-			} else 
+				}
+			} 
+			else 
+			{
 				return null;
+			}
 		}
 		return null;
 	}
-
-	/**
-	 * 
-	 */
+	
 	public String resetPassword(String email) throws HibernateException,
 			Exception {
 		Map<String, String> resultMap = new HashMap<String, String>();
 		try {
 			List<MasterUser> userList = userDAO.findMasterUserByEmail(email);
 			if (userList != null && !userList.isEmpty()) {
-				String randomPassword = RandomStringUtils.randomAlphanumeric(CommonConstants.RANDOM_PASSWORD_LENGTH);
+				String randomPassword = RandomStringUtils
+						.randomAlphanumeric(CommonConstants.RANDOM_PASSWORD_LENGTH);
 				try {
 					Map<String, Object> tempMap = new HashMap<String, Object>();
 					tempMap.put("password", randomPassword);
-					userDAO.updateMasterUser(email,tempMap);
+					userDAO.updateMasterUser(email, tempMap);
 				} catch (Exception e) {
-					CollegeDiaryLogger.error(CLASS_NAME,"resetPassword Exception in updating new Passowrd for User "+ email, e, true);
+					CollegeDiaryLogger.error(CLASS_NAME,
+							"resetPassword Exception in updating new Passowrd for User "
+									+ email, e, true);
 					throw e;
 				}
 				String[] toList = new String[1];
 				toList[0] = email;
 				try {
-					EmailNotifier.sendNewPasswordMail(toList, randomPassword,CommonConstants.CONTACT_EMAIL_ADDRESS);
+					EmailNotifier.sendNewPasswordMail(toList, randomPassword,
+							CommonConstants.CONTACT_EMAIL_ADDRESS);
 				} catch (Exception e) {
-					CollegeDiaryLogger.error(CLASS_NAME,"resetPassword Exception in Sending Email",	e, true);
+					CollegeDiaryLogger
+							.error(CLASS_NAME,
+									"resetPassword Exception in Sending Email",
+									e, true);
 					throw e;
 				}
 				return CommonConstants.PASSWORD_RESET_SUCCESS;
 			} else {
-				CollegeDiaryLogger.trace(CLASS_NAME, "resetPassword","Unable to find user with email");
+				CollegeDiaryLogger.trace(CLASS_NAME, "resetPassword",
+						"Unable to find user with email");
 				return CommonConstants.USER_EMAIL_NOT_FOUND;
 			}
 		} catch (Exception e) {
-			CollegeDiaryLogger.error(CLASS_NAME,"resetPassword unable to find user with email " + email, e,	true);
+			CollegeDiaryLogger.error(CLASS_NAME,
+					"resetPassword unable to find user with email " + email, e,
+					true);
 			throw e;
 		}
+	}
+
+	/*********************************************************************************
+	 * -----------------------------------------------------------------------
+	 * Public Methods (fileUpload)
+	 * -----------------------------------------------------------------------
+	 * This is method that uploads the file.
+	 * 
+	 * @param MultipartHttpServletRequest
+	 *            Request that uploads multiple files.
+	 * 
+	 * @return : SUCCESS or FAILURE
+	 * 
+	 ********************************************************************************/
+	public boolean fileUpload(MultipartHttpServletRequest request) {
+		LinkedList<FileMeta> files = new LinkedList<FileMeta>();
+		FileMeta fileMeta = null;
+		Iterator<String> itr = request.getFileNames();
+		MultipartFile mpf = null;
+		boolean resp = CommonConstants.SUCCESS;
+		
+		session = request.getSession();
+
+		while (itr.hasNext()) {
+			mpf = request.getFile(itr.next());
+			fileMeta = new FileMeta();
+			fileMeta.setFileName(mpf.getOriginalFilename());
+			fileMeta.setFileSize(mpf.getSize() / 1024 + " Kb");
+			fileMeta.setFileType(mpf.getContentType());
+			
+			try {
+				fileMeta.setBytes(mpf.getBytes());
+				if (!(new File(CommonConstants.PATH + String.valueOf(session.getAttribute("username"))).exists())) {
+	                new File(CommonConstants.PATH + String.valueOf(session.getAttribute("username"))).mkdir();
+	            }
+				FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream(
+						CommonConstants.PATH + String.valueOf(session.getAttribute("username")) + "/" + mpf.getOriginalFilename()));
+				files.add(fileMeta);
+			} catch (IOException e) {
+				e.printStackTrace();
+				CollegeDiaryLogger.error(CLASS_NAME, "fileUpload for "+ fileMeta.getFileName() + " failed", e, true);
+				resp = CommonConstants.FAILURE;
+			}
+		}
+		return resp;
+	}
+
+	/**********************************************************************************
+	 * -----------------------------------------------------------------------
+	 * Public Methods (webcamUpload)
+	 * -----------------------------------------------------------------------
+	 * This is method that uploads the file.
+	 * 
+	 * @param HttpServletRequest
+	 *            Request object that uploads  webcam taken snapshot
+	 * 
+	 * @return : SUCCESS or FAILURE
+	 * 
+	 *********************************************************************************/
+	public boolean webcamUpload(HttpServletRequest request) {
+		String imageDataString = null;
+		boolean resp = CommonConstants.SUCCESS;
+		byte[] imageByteArray = null;
+		imageDataString = request.getParameter("txtPic").toString();
+		FileOutputStream imageOutFile = null;
+		try {
+			session = request.getSession();
+			// Converting a Base64 String into Image byte array
+			imageByteArray = Base64.decodeBase64(imageDataString);
+			// Write a image byte array into file system
+			if (!(new File(CommonConstants.PATH + String.valueOf(session.getAttribute("username"))).exists())) {
+                new File(CommonConstants.PATH + String.valueOf(session.getAttribute("username"))).mkdir();
+            }
+			imageOutFile = new FileOutputStream(CommonConstants.PATH + String.valueOf(session.getAttribute("username")) + "/profilePicture.jpeg" );
+			imageOutFile.write(imageByteArray);
+			imageOutFile.close();
+		} catch (IOException ioe) {
+			System.out.println("Exception while reading the Image in webcamUpload " + ioe);
+			resp = CommonConstants.FAILURE;
+		}
+		return resp;
 	}
 }

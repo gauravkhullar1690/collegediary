@@ -20,9 +20,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.HibernateException;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.collegediary.model.user.MasterUser;
 import com.collegediary.model.user.UserDetails;
@@ -81,4 +83,31 @@ public interface IUserServices {
 	 * @return messageString
 	 */
 	public String resetPassword(String email)throws HibernateException, Exception;
+	
+	/**
+	 * -----------------------------------------------------------------------
+	 * Public Methods (fileUpload)
+	 * -----------------------------------------------------------------------
+	 * This is method that uploads the file.
+	 * 
+	 * @param MultipartHttpServletRequest
+	 *            Request that uploads multiple files.
+	 * 
+	 * @return : SUCCESS or FAILURE
+	 * 
+	 **/
+	public boolean fileUpload(MultipartHttpServletRequest request);
+	/**
+	 * -----------------------------------------------------------------------
+	 * Public Methods (webcamUpload)
+	 * -----------------------------------------------------------------------
+	 * This is method that uploads the file.
+	 * 
+	 * @param HttpServletRequest
+	 *            Request object that uploads  webcam taken snapshot
+	 * 
+	 * @return : SUCCESS or FAILURE
+	 * 
+	 **/
+	public boolean webcamUpload(HttpServletRequest request);
 }

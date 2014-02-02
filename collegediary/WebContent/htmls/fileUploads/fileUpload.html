@@ -1,0 +1,10 @@
+<link href="css/additional-info-base.css" rel="stylesheet">
+<div class="container">
+	<div class="container" ng-controller="fileUploadController" >
+		<form  id="fileuploadForm" method="POST" enctype="multipart/form-data" >
+			<!-- We will define uploadFinished in MainCtrl and attach
+			it to the scope, so that it is available here -->
+			File Upload:<input id="testUpload" type="file" fileupload name="files[]" data-url="/collegediary/rest/user/fileUpload" multiple done="uploadFinished(e, data)">
+		</form>
+	</div>
+</div>

@@ -28,7 +28,19 @@ collegediaryapp.config([ '$routeProvider', function($routeProvider) {
 	}).when('/additionlInfo',{
 		templateUrl : 'htmls/additional-info/additionl-info-base.html',
 		controller : additionalInfoController
+	}).when('/profilePicture',{
+		templateUrl : 'htmls/additional-info/profile-Picture.html',
+		controller : profilePictureController
+	}).when('/fileUpload',{
+		templateUrl : 'htmls/fileUploads/fileUpload.html',
+		controller : fileUploadController
+	}).when('/webcamUpload',{
+		templateUrl : 'htmls/fileUploads/webcamUpload.html',
+		controller : webcamUploadController
 	}).otherwise({
 		redirectTo : '/login'
 	});
 } ]);
+
+//templateUrl : 'htmls/fileUploads/webcamUpload.html',
+//controller : webcamUploadController
