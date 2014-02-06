@@ -9,7 +9,6 @@
 
 function fileUploadController($scope,$location,commonService){
 	$scope.uploadFinished = function(e, data) {
-		resMessage = "We just finished uploading this baby...";
 		var title = "File Upload complete";
 		var message = "File Upload Successful";
 		var html = "";
@@ -24,7 +23,6 @@ function fileUploadController($scope,$location,commonService){
 		};
 
 		commonService.customDialog(title,message,html,buttons);
-
 		$location.path("/additionalInfo");
 	};
 }
@@ -36,7 +34,7 @@ function fileUploadController($scope,$location,commonService){
  * 	Outputs		: 
  ************************************************************************/
 
-function webcamUploadController($scope){
+function webcamUploadController($scope,$http,$location){
 	alert("In webcam controller");
 	$("#webcam").scriptcam({
 		showMicrophoneErrors : false,
@@ -47,5 +45,23 @@ function webcamUploadController($scope){
 		onPictureAsBase64 : base64_tofield_and_image		
 	});
 	
-	resMessage = "We just finished uploading this baby...";
+	$scope.base64tofield = function () {
+		var frame = $.scriptcam.getFrameAsBase64();
+		var matersuser = {
+				
+				image : $.scriptcam.getFrameAsBase64()
+			
+			};
+		$('#txtPic').val(frame);
+		$('#image').attr("src","data:image/png;base64," + frame);
+		console.debug(matersuser);
+		$http.post('rest/user/webcamUpload', {
+			masterUser : matersuser
+		}).success(function(data, status, headers, config) {
+				$location.url('/login');
+		}).error(function(data, status, headers, config) {
+			alert("error while uploading pic");
+			// Handle the error
+		});
+	}		
 }

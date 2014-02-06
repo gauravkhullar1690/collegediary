@@ -15,6 +15,13 @@ function base64_tofield() {
 	$('#txtPic').val($.scriptcam.getFrameAsBase64());
 	$('#image').attr("src","data:image/png;base64," + $.scriptcam.getFrameAsBase64());
 	$('#webcamUpload').submit();
+	$.post( "/rest/user/webcamUpload",$.scriptcam.getFrameAsBase64())
+		  .done(function() {
+		    alert( "second success" );
+		  })
+		  .fail(function() {
+		    alert( "error" );
+		  });
 };
 function base64_toimage() {
 	$('#image').attr("src","data:image/png;base64," + $.scriptcam.getFrameAsBase64());

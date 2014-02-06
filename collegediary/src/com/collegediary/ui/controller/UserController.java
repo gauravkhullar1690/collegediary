@@ -296,15 +296,12 @@ public class UserController implements Serializable {
 	 * 
 	 ***************************************************************************/
 	
-	@RequestMapping(value = "/webcamUpload", method = RequestMethod.POST)
-	public @ResponseBody boolean webcamUpload(HttpServletRequest request,HttpServletResponse response) {
-		
-		boolean resp = CommonConstants.FAILURE;
+	@RequestMapping(value = "/webcamUpload", method = RequestMethod.POST, headers = { "Accept=application/json" })
+	public @ResponseBody boolean webcamUpload(@RequestBody HashMap<String, MasterUser> requestMap) {
+		boolean resp = CommonConstants.SUCCESS;
 		CollegeDiaryLogger.trace(CLASS_NAME, "webcamUpload","Entering webcamUpload method");
-		resp = userService.webcamUpload(request);
+		resp = userService.webcamUpload(requestMap.get(CommonConstants.MASTER_USER).getImage());
 		CollegeDiaryLogger.trace(CLASS_NAME, "webcamUpload","Exiting webcamUpload method");
-		/* A local fix trying to find better solution */
-		try{response.sendRedirect("http://localhost:8080/collegediary/#/additionalInfo");}catch(Exception e){}
 		return resp;
 
 	}

@@ -8,3 +8,15 @@ this.customDialog = function(title, message, html, buttons) {
 		});
 	};
 });
+
+collegediaryapp.service('contactsService',function(){
+	var users;
+	this.saveUsers = function(userList){
+			this.users = userList;
+	};
+	
+	this.getUsers = function(){
+		return this.users;
+	};
+});
+

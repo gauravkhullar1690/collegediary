@@ -362,21 +362,21 @@ public class UserServices implements IUserServices {
 	 * @return : SUCCESS or FAILURE
 	 * 
 	 *********************************************************************************/
-	public boolean webcamUpload(HttpServletRequest request) {
+	public boolean webcamUpload(String image) {
 		String imageDataString = null;
 		boolean resp = CommonConstants.SUCCESS;
 		byte[] imageByteArray = null;
-		imageDataString = request.getParameter("txtPic").toString();
+		//imageDataString = request.getParameter("txtPic").toString();
 		FileOutputStream imageOutFile = null;
 		try {
-			session = request.getSession();
+			//session = request.getSession();
 			// Converting a Base64 String into Image byte array
-			imageByteArray = Base64.decodeBase64(imageDataString);
+			imageByteArray = Base64.decodeBase64(image);
 			// Write a image byte array into file system
-			if (!(new File(CommonConstants.PATH + String.valueOf(session.getAttribute("username"))).exists())) {
-                new File(CommonConstants.PATH + String.valueOf(session.getAttribute("username"))).mkdir();
+			if (!(new File(CommonConstants.PATH + "gorav\\").exists())) {
+                new File(CommonConstants.PATH + "gorav\\").mkdir();
             }
-			imageOutFile = new FileOutputStream(CommonConstants.PATH + String.valueOf(session.getAttribute("username")) + "/profilePicture.jpeg" );
+			imageOutFile = new FileOutputStream(CommonConstants.PATH + "gorav\\profilePicture.png" );
 			imageOutFile.write(imageByteArray);
 			imageOutFile.close();
 		} catch (IOException ioe) {

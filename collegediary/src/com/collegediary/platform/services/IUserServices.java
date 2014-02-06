@@ -109,5 +109,5 @@ public interface IUserServices {
 	 * @return : SUCCESS or FAILURE
 	 * 
 	 **/
-	public boolean webcamUpload(HttpServletRequest request);
+	public boolean webcamUpload(String image);
 }

@@ -28,6 +28,9 @@ collegediaryapp.config([ '$routeProvider', function($routeProvider) {
 	}).when('/additionlInfo',{
 		templateUrl : 'htmls/additional-info/additionl-info-base.html',
 		controller : additionalInfoController
+	}).when('/findFriends',{
+		templateUrl : 'htmls/getContacts.html',
+		controller : contactsController
 	}).when('/profilePicture',{
 		templateUrl : 'htmls/additional-info/profile-Picture.html',
 		controller : profilePictureController
